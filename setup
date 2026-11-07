@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Unix entry point. All logic lives in scripts/setup.mjs (shared with setup.ps1).
+# Usage: ./setup [--e2e]
+set -euo pipefail
+cd "$(dirname "$0")"
+command -v node >/dev/null 2>&1 || { echo "Node.js is required (see .nvmrc)." >&2; exit 1; }
+exec node scripts/setup.mjs "$@"
