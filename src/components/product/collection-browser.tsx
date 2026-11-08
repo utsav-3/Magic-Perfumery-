@@ -1,42 +1,109 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ProductGrid } from "@/components/product/product-grid";
-import { familiesOf } from "@/lib/catalog";
-import type { Fragrance, FragranceFamily } from "@/types/fragrance";
+import { familiesOf, filterFragrances, type FragranceFilter } from "@/lib/catalog";
+import {
+  audienceLabels,
+  occasionLabels,
+  type Audience,
+  type Fragrance,
+  type Occasion,
+} from "@/types/fragrance";
 
+const pick = <T extends string>(value: string | null, allowed: readonly T[]) =>
+  allowed.find((a) => a === value);
+
+/**
+ * Filters live in the URL (?for=her&occasion=gifting&family=floral), so the
+ * home page tiles can link straight to a filtered view and links can be shared.
+ */
 export function CollectionBrowser({ fragrances }: { fragrances: readonly Fragrance[] }) {
-  const [family, setFamily] = useState<FragranceFamily | "all">("all");
+  const params = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const families = familiesOf(fragrances);
-  const shown = family === "all" ? fragrances : fragrances.filter((f) => f.family === family);
-  const options = [
-    { value: "all" as const, label: "All", count: fragrances.length },
-    ...families.map((f) => ({
-      value: f,
-      label: f,
-      count: fragrances.filter((x) => x.family === f).length,
-    })),
+
+  const filter: FragranceFilter = {
+    audience: pick(params.get("for"), Object.keys(audienceLabels) as Audience[]),
+    occasion: pick(params.get("occasion"), Object.keys(occasionLabels) as Occasion[]),
+    family: pick(params.get("family"), families),
+  };
+  const shown = filterFragrances(fragrances, filter);
+
+  const set = (key: string, value?: string) => {
+    const next = new URLSearchParams(params);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    const qs = next.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+
+  const groups = [
+    {
+      key: "for",
+      label: "Shop for",
+      value: filter.audience,
+      options: Object.entries(audienceLabels).map(([value, label]) => ({ value, label })),
+    },
+    {
+      key: "occasion",
+      label: "Occasion",
+      value: filter.occasion,
+      options: Object.entries(occasionLabels).map(([value, label]) => ({ value, label })),
+    },
+    {
+      key: "family",
+      label: "Scent",
+      value: filter.family,
+      options: families.map((f) => ({ value: f, label: f })),
+    },
   ];
 
   return (
     <div className="space-y-10">
-      <div role="group" aria-label="Filter by scent family" className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            aria-pressed={family === o.value}
-            onClick={() => setFamily(o.value)}
-            className="aria-pressed:bg-dusk aria-pressed:text-plaster ring-dusk/20 hover:ring-dusk px-4 py-2 text-sm capitalize ring-1 transition-colors"
+      <div className="space-y-4">
+        {groups.map((g) => (
+          <div
+            key={g.key}
+            role="group"
+            aria-label={`Filter by ${g.label.toLowerCase()}`}
+            className="flex flex-wrap items-center gap-2"
           >
-            {o.label} <span className="opacity-50">{o.count}</span>
-          </button>
+            <span className="eyebrow text-haze w-24 shrink-0 text-[0.65rem]">{g.label}</span>
+            {[{ value: undefined, label: "All" }, ...g.options].map((o) => (
+              <button
+                key={o.value ?? "all"}
+                type="button"
+                aria-pressed={g.value === o.value}
+                onClick={() => set(g.key, o.value)}
+                className="aria-pressed:bg-night aria-pressed:text-paper ring-night/20 hover:ring-night rounded-full px-4 py-1.5 text-sm capitalize ring-1 transition-colors"
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
         ))}
       </div>
-      <p className="sr-only" aria-live="polite">
-        Showing {shown.length} perfumes
+
+      <p className="text-haze text-sm" aria-live="polite">
+        Showing {shown.length} of {fragrances.length} perfumes
       </p>
-      <ProductGrid fragrances={shown} />
+
+      {shown.length > 0 ? (
+        <ProductGrid fragrances={shown} />
+      ) : (
+        <div className="border-night/15 space-y-4 border p-10 text-center">
+          <p className="font-display text-xl">No perfume matches all of those filters.</p>
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => router.replace(pathname, { scroll: false })}
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -29,7 +29,7 @@ export function AddToCart({
           {variants.map((v) => (
             <label
               key={v.sizeMl}
-              className="has-[:checked]:bg-dusk has-[:checked]:text-plaster has-[:focus-visible]:outline-dusk ring-dusk/25 hover:ring-dusk cursor-pointer px-5 py-3 text-sm ring-1 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"
+              className="has-[:checked]:bg-night has-[:checked]:text-paper has-[:focus-visible]:outline-night ring-night/25 hover:ring-night cursor-pointer rounded-full px-5 py-3 text-sm ring-1 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"
             >
               <input
                 type="radio"

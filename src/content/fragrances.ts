@@ -1,166 +1,169 @@
-import type { Fragrance } from "@/types/fragrance";
+import type { Fragrance, Variant } from "@/types/fragrance";
 
 /**
- * Catalog. Names, notes and prices are draft copy for the client demo —
- * confirm with Bombay Perfume before launch. Only src/lib/catalog.ts may
- * import this file.
+ * Magic Perfumery's range, from the client's tester photo.
+ * Names and prices are the client's. Taglines, descriptions, notes, audience
+ * and occasions are drafts to confirm with the client (see TODOS.md).
  */
+
+/** Every perfume costs the same: ₹599 for 50 ml, ₹1,199 for 100 ml. */
+const sizes: [Variant, ...Variant[]] = [
+  { sizeMl: 50, priceMinor: 59_900 },
+  { sizeMl: 100, priceMinor: 1_19_900 },
+];
+
 export const fragrances: readonly Fragrance[] = [
   {
-    slug: "marine-drive",
-    name: "Marine Drive",
-    place: "Marine Drive",
-    tagline: "Salt air and sodium light along the bay.",
+    slug: "cold-water",
+    name: "Cold Water",
+    tagline: "Cool, clean and aquatic.",
     description:
-      "The walk from Chowpatty to Nariman Point after sunset: sea spray on the parapet, a bright cut of grapefruit, and a warm ambergris trail that stays on the skin long after the lights go out.",
+      "A splash of mint and lavender over sea notes, settling into soft cedar. Fresh enough for a humid morning and it still lasts into the evening.",
     family: "fresh",
-    concentration: "Eau de Parfum",
+    audience: "him",
+    occasions: ["everyday"],
     notes: {
-      top: ["Sea salt", "Bergamot", "Pink grapefruit"],
-      heart: ["Ambergris accord", "Violet leaf"],
-      base: ["Driftwood", "White musk"],
+      top: ["Mint", "Lavender", "Green notes"],
+      heart: ["Sea notes", "Geranium", "Jasmine"],
+      base: ["Cedar", "Musk", "Amber"],
     },
-    variants: [
-      { sizeMl: 50, priceMinor: 480000 },
-      { sizeMl: 100, priceMinor: 720000 },
-    ],
-    liquid: "#8fb3bf",
+    variants: sizes,
+    label: { from: "#eef7fb", to: "#3a9fd0", ink: "#1d4a63", mark: "#d4589c" },
   },
   {
-    slug: "dadar-mogra",
-    name: "Dadar Mogra",
-    place: "Dadar flower market",
-    tagline: "A string of jasmine, bought at dawn.",
+    slug: "the-boss",
+    name: "The Boss",
+    tagline: "Polished and spicy, made for work.",
     description:
-      "Mogra sold by the hand-length before the city wakes. Heady jasmine sambac and creamy tuberose, softened with sandalwood so it wears close and lasts all day.",
-    family: "floral",
-    concentration: "Eau de Parfum",
-    notes: {
-      top: ["Green leaves", "Mandarin"],
-      heart: ["Mogra (jasmine sambac)", "Tuberose"],
-      base: ["Sandalwood", "White musk"],
-    },
-    variants: [
-      { sizeMl: 50, priceMinor: 450000 },
-      { sizeMl: 100, priceMinor: 680000 },
-    ],
-    liquid: "#efe0a8",
-  },
-  {
-    slug: "bhendi-bazaar",
-    name: "Bhendi Bazaar",
-    place: "the attar lanes of Bhendi Bazaar",
-    tagline: "Oud and saffron from the old attar shops.",
-    description:
-      "A pure perfume oil in the tradition of the attar sellers off Mohammed Ali Road. Saffron and Taif rose over dark, resinous oud. One drop at the wrist is enough.",
-    family: "amber",
-    concentration: "Attar",
-    notes: {
-      top: ["Saffron"],
-      heart: ["Taif rose", "Oud"],
-      base: ["Amber", "Labdanum"],
-    },
-    variants: [
-      { sizeMl: 12, priceMinor: 650000 },
-      { sizeMl: 24, priceMinor: 1150000 },
-    ],
-    liquid: "#7a3420",
-  },
-  {
-    slug: "first-rain",
-    name: "First Rain",
-    place: "the first monsoon shower",
-    tagline: "Hot stone and wet earth, the hour the monsoon breaks.",
-    description:
-      "Built around mitti — earth baked and distilled the way Kannauj perfumers have for centuries. Green cardamom and geranium on top, cool vetiver underneath.",
+      "Crisp apple and bergamot open onto warm cinnamon and clove, then dry down to sandalwood. Confident without shouting across the room.",
     family: "woody",
-    concentration: "Eau de Parfum",
+    audience: "him",
+    occasions: ["everyday", "gifting"],
     notes: {
-      top: ["Green cardamom", "Petrichor accord"],
-      heart: ["Mitti (baked earth)", "Geranium"],
+      top: ["Apple", "Bergamot"],
+      heart: ["Cinnamon", "Clove"],
+      base: ["Sandalwood", "Vetiver"],
+    },
+    variants: sizes,
+    label: { from: "#fbfbfd", to: "#eceaf1", ink: "#3d3a46", mark: "#b45fc8" },
+  },
+  {
+    slug: "p-sport",
+    name: "P. Sport",
+    tagline: "Bright citrus for hot days.",
+    description:
+      "Lemon and grapefruit with a cold hit of mint. Light, energetic and easy to wear to the gym, on the road or anywhere the day takes you.",
+    family: "citrus",
+    audience: "him",
+    occasions: ["everyday"],
+    notes: {
+      top: ["Lemon", "Grapefruit"],
+      heart: ["Mint", "Green notes"],
+      base: ["Musk", "Light woods"],
+    },
+    variants: sizes,
+    label: { from: "#3b86de", to: "#79c6f0", ink: "#ffffff", mark: "#ffffff" },
+  },
+  {
+    slug: "black-j",
+    name: "Black J",
+    tagline: "Dark and warm, for nights out.",
+    description:
+      "Black pepper and mandarin over a heart of leather and lavender, finished with amber and tonka. Strong projection that holds through a long evening.",
+    family: "amber",
+    audience: "him",
+    occasions: ["evening"],
+    notes: {
+      top: ["Black pepper", "Mandarin"],
+      heart: ["Leather", "Lavender"],
+      base: ["Amber", "Tonka"],
+    },
+    variants: sizes,
+    label: { from: "#3149a4", to: "#f2a072", ink: "#14121c", mark: "#ffffff" },
+  },
+  {
+    slug: "z-classics",
+    name: "Z Classics",
+    tagline: "Smooth woods with a citrus edge.",
+    description:
+      "Bergamot and neroli lead into iris and violet leaf, resting on vetiver and cedar. A refined everyday scent that works with a suit or a kurta.",
+    family: "woody",
+    audience: "him",
+    occasions: ["everyday", "gifting"],
+    notes: {
+      top: ["Bergamot", "Neroli"],
+      heart: ["Iris", "Violet leaf"],
       base: ["Vetiver", "Cedar"],
     },
-    variants: [
-      { sizeMl: 50, priceMinor: 520000 },
-      { sizeMl: 100, priceMinor: 780000 },
-    ],
-    liquid: "#a3926d",
+    variants: sizes,
+    label: { from: "#2b2c9e", to: "#5a3fc6", ink: "#ffffff", mark: "#ffffff" },
   },
   {
-    slug: "irani-cafe",
-    name: "Irani Café",
-    place: "the Irani cafés",
-    tagline: "Cutting chai, bun maska, a marble-top table.",
+    slug: "molten-caramel",
+    name: "Molten Caramel",
+    tagline: "Warm caramel and vanilla.",
     description:
-      "Strong black tea with cardamom and ginger, a little milk, and the warm sweetness of tonka and cocoa. Comforting without being sugary.",
+      "Golden caramel and a pinch of pink pepper melt into praline and coffee over a vanilla base. Sweet, cosy and noticed when you walk in.",
     family: "gourmand",
-    concentration: "Eau de Parfum",
+    audience: "unisex",
+    occasions: ["evening", "gifting"],
     notes: {
-      top: ["Cardamom", "Ginger"],
-      heart: ["Black tea", "Milk accord"],
-      base: ["Tonka bean", "Vanilla", "Cocoa"],
+      top: ["Caramel", "Pink pepper"],
+      heart: ["Praline", "Coffee"],
+      base: ["Vanilla", "Tonka", "Musk"],
     },
-    variants: [
-      { sizeMl: 50, priceMinor: 450000 },
-      { sizeMl: 100, priceMinor: 680000 },
-    ],
-    liquid: "#b5804f",
+    variants: sizes,
+    label: { from: "#7e3226", to: "#c8684c", ink: "#ffffff", mark: "#ffffff" },
   },
   {
-    slug: "malabar-hill",
-    name: "Malabar Hill",
-    place: "Malabar Hill",
-    tagline: "Sandalwood and iris, high above the bay.",
+    slug: "soft-dove",
+    name: "Soft Dove",
+    tagline: "Soft, powdery and clean.",
     description:
-      "Our richest concentration. Creamy Mysore sandalwood and powdery orris, lifted with pink pepper. Quiet in the room, unforgettable up close.",
-    family: "woody",
-    concentration: "Extrait de Parfum",
+      "Juicy pear and rose with a cloud of powder, resting on white musk. Gentle and close to the skin, like freshly laundered cotton.",
+    family: "floral",
+    audience: "her",
+    occasions: ["everyday"],
     notes: {
-      top: ["Bergamot", "Pink pepper"],
-      heart: ["Orris", "Rose"],
-      base: ["Mysore sandalwood", "Cashmeran"],
+      top: ["Pear", "Bergamot"],
+      heart: ["Rose", "Lily", "Powder notes"],
+      base: ["White musk", "Sandalwood"],
     },
-    variants: [{ sizeMl: 50, priceMinor: 860000 }],
-    liquid: "#d8b996",
+    variants: sizes,
+    label: { from: "#fcfbfd", to: "#efeaf4", ink: "#3d3a46", mark: "#c25fc0" },
   },
   {
-    slug: "kala-ghoda",
-    name: "Kala Ghoda",
-    place: "Kala Ghoda",
-    tagline: "Leather, incense and the galleries after closing.",
+    slug: "brut-musk",
+    name: "Brut Musk",
+    tagline: "A classic barbershop musk.",
     description:
-      "Smoky leather and frankincense with a crack of black pepper — the art district at night, when the openings end and the streets go quiet.",
-    family: "woody",
-    concentration: "Eau de Parfum",
+      "Lavender and geranium over warm musk and tonka. The clean, familiar smell of a fresh shave, made to last all day.",
+    family: "fresh",
+    audience: "him",
+    occasions: ["everyday"],
     notes: {
-      top: ["Black pepper", "Elemi"],
-      heart: ["Leather", "Frankincense"],
-      base: ["Vetiver", "Birch tar"],
+      top: ["Lavender", "Bergamot"],
+      heart: ["Geranium", "Musk"],
+      base: ["Tonka", "Oakmoss"],
     },
-    variants: [
-      { sizeMl: 50, priceMinor: 520000 },
-      { sizeMl: 100, priceMinor: 780000 },
-    ],
-    liquid: "#3d3545",
+    variants: sizes,
+    label: { from: "#b9def3", to: "#8ac0e6", ink: "#23305e", mark: "#23305e" },
   },
   {
-    slug: "alphonso",
-    name: "Alphonso",
-    place: "Crawford Market in May",
-    tagline: "The first mangoes of the season, sliced cold.",
+    slug: "no-5",
+    name: "No. 5",
+    tagline: "A timeless floral.",
     description:
-      "Juicy Alphonso mango and lime over orange blossom, grounded with a little vetiver so it reads as perfume, not fruit salad. Made for Bombay summers.",
-    family: "citrus",
-    concentration: "Eau de Parfum",
+      "Sparkling aldehydes and neroli open onto rose, jasmine and ylang-ylang, warmed by sandalwood and vanilla. Elegant for evenings and special days.",
+    family: "floral",
+    audience: "her",
+    occasions: ["evening", "gifting"],
     notes: {
-      top: ["Alphonso mango", "Lime"],
-      heart: ["Neroli", "Orange blossom"],
-      base: ["Vetiver", "Musk"],
+      top: ["Aldehydes", "Neroli"],
+      heart: ["Rose", "Jasmine", "Ylang-ylang"],
+      base: ["Sandalwood", "Vanilla", "Vetiver"],
     },
-    variants: [
-      { sizeMl: 50, priceMinor: 450000 },
-      { sizeMl: 100, priceMinor: 680000 },
-    ],
-    liquid: "#e6b04e",
+    variants: sizes,
+    label: { from: "#2a3aa8", to: "#d62b2b", ink: "#ffffff", mark: "#ffffff" },
   },
 ];

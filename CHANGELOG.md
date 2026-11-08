@@ -4,6 +4,23 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Version is in 
 
 ## Unreleased
 
+### Changed
+
+- Rebranded to **Magic Perfumery**: lotus logo, violet-to-saffron palette from the client's poster, Cinzel + Jost type.
+- Real range of 9 perfumes at ₹599 (50 ml) / ₹1,199 (100 ml), drawn as the client's frosted spray bottles.
+- New hero: the lotus draws itself, then the whole range rises into line.
+
+### Added
+
+- Quick add (50 ml / 100 ml) on every product card.
+- Shop by who it's for (him / her / unisex) and by occasion (everyday / evening / gifting); filters live in the URL.
+- Announcement bar, trust strip, gift guide, the client's real bottle photo.
+- Floating "Chat with us" WhatsApp button.
+
+### Removed
+
+- Bombay-specific content: Queen's Necklace hero, "Where the notes come from".
+
 ## 0.2.0 — 2026-11-06
 
 ### Added

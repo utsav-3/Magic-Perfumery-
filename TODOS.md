@@ -1,14 +1,15 @@
 # TODOs
 
-## Before showing the client
+## Confirm with the client before launch
 
-- [ ] Set `NEXT_PUBLIC_WHATSAPP_NUMBER` in `.env.local` (and on the host) so orders reach the shop. Until then, "Order on WhatsApp" asks the customer to pick a chat.
-
-## Before launch (confirm with client)
-
-- [ ] Product names, notes, sizes and prices in `src/content/fragrances.ts` are draft copy
-- [ ] Sourcing claims in `src/content/origins.ts` are draft copy
-- [ ] Product photography → `public/images/products/`, then swap `Bottle` for `next/image`
+- [ ] Taglines, descriptions and notes in `src/content/fragrances.ts` are draft copy written from the scent names
+- [ ] Who each perfume is for (him / her / unisex) and its occasions are drafts; today 6 are "for him", 2 "for her", 1 unisex
+- [ ] Gift guide picks in `src/content/gift-guide.ts`
+- [ ] Product names: the site shows "No. 5" and "Molten Caramel"; the bottle labels also say "by Chanell" and "Paris Corner". Using another brand's name on the site is a trademark risk — client to decide
+- [ ] Are the 30 ml testers for sale? If so, at what price (add as a size)
+- [ ] Delivery areas, charges and payment methods, to state on the site
+- [ ] Vector logo file (SVG/AI/PDF) to replace the redrawn lotus in `src/components/brand/lotus-mark.tsx`
+- [ ] Individual product photos → `public/images/products/`; could replace the drawn bottles
 - [ ] Open Graph share image (`src/app/opengraph-image.tsx`)
 - [ ] Pick a deployment target and set `NEXT_PUBLIC_SITE_URL` there
 

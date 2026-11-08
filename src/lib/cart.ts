@@ -80,8 +80,7 @@ export function subtotal(lines: readonly ResolvedLine[]) {
 
 export function orderMessage(lines: readonly ResolvedLine[], brand: string) {
   const items = lines.map(
-    (l) =>
-      `• ${l.fragrance.name} — ${l.fragrance.concentration}, ${l.sizeMl} ml × ${l.qty} — ${formatPrice(l.lineTotal)}`,
+    (l) => `• ${l.fragrance.name}, ${l.sizeMl} ml × ${l.qty} — ${formatPrice(l.lineTotal)}`,
   );
   return [
     `Hello ${brand}, I'd like to order:`,

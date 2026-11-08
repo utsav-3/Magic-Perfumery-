@@ -15,21 +15,21 @@ import { findFragrance } from "@/lib/catalog";
 
 describe("bag lines", () => {
   it("merges the same product and size into one line", () => {
-    let lines = addLine([], "marine-drive", 50);
-    lines = addLine(lines, "marine-drive", 50, 2);
-    lines = addLine(lines, "marine-drive", 100);
+    let lines = addLine([], "cold-water", 50);
+    lines = addLine(lines, "cold-water", 50, 2);
+    lines = addLine(lines, "cold-water", 100);
     expect(lines).toEqual([
-      { slug: "marine-drive", sizeMl: 50, qty: 3 },
-      { slug: "marine-drive", sizeMl: 100, qty: 1 },
+      { slug: "cold-water", sizeMl: 50, qty: 3 },
+      { slug: "cold-water", sizeMl: 100, qty: 1 },
     ]);
     expect(itemCount(lines)).toBe(4);
   });
 
   it("caps quantity and removes a line at zero", () => {
-    const lines = addLine([], "alphonso", 50, 99);
+    const lines = addLine([], "soft-dove", 50, 99);
     expect(lines[0]!.qty).toBe(MAX_QTY);
-    expect(setLineQty(lines, "alphonso", 50, 0)).toEqual([]);
-    expect(removeLine(lines, "alphonso", 50)).toEqual([]);
+    expect(setLineQty(lines, "soft-dove", 50, 0)).toEqual([]);
+    expect(removeLine(lines, "soft-dove", 50)).toEqual([]);
   });
 });
 
@@ -40,33 +40,33 @@ describe("parseCart", () => {
     expect(parseCart('{"slug":"x"}')).toEqual([]);
     expect(
       parseCart(
-        '[{"slug":"alphonso","sizeMl":50,"qty":2},{"slug":1},{"slug":"x","sizeMl":5,"qty":0}]',
+        '[{"slug":"soft-dove","sizeMl":50,"qty":2},{"slug":1},{"slug":"x","sizeMl":5,"qty":0}]',
       ),
-    ).toEqual([{ slug: "alphonso", sizeMl: 50, qty: 2 }]);
+    ).toEqual([{ slug: "soft-dove", sizeMl: 50, qty: 2 }]);
   });
 });
 
 describe("pricing and order message", () => {
   const lines = resolveLines(
     [
-      { slug: "marine-drive", sizeMl: 50, qty: 2 },
-      { slug: "bhendi-bazaar", sizeMl: 12, qty: 1 },
+      { slug: "cold-water", sizeMl: 50, qty: 2 },
+      { slug: "black-j", sizeMl: 100, qty: 1 },
       { slug: "discontinued", sizeMl: 50, qty: 1 },
-      { slug: "alphonso", sizeMl: 999, qty: 1 },
+      { slug: "soft-dove", sizeMl: 999, qty: 1 },
     ],
     findFragrance,
   );
 
   it("drops products or sizes that no longer exist and totals the rest", () => {
-    expect(lines.map((l) => l.slug)).toEqual(["marine-drive", "bhendi-bazaar"]);
-    expect(subtotal(lines)).toBe(480000 * 2 + 650000);
+    expect(lines.map((l) => l.slug)).toEqual(["cold-water", "black-j"]);
+    expect(subtotal(lines)).toBe(59_900 * 2 + 1_19_900);
   });
 
   it("writes a readable WhatsApp order", () => {
-    const msg = orderMessage(lines, "Bombay Perfume");
-    expect(msg).toContain("Hello Bombay Perfume");
-    expect(msg).toContain("Marine Drive — Eau de Parfum, 50 ml × 2 — ₹9,600");
-    expect(msg).toContain("Subtotal: ₹16,100");
+    const msg = orderMessage(lines, "Magic Perfumery");
+    expect(msg).toContain("Hello Magic Perfumery");
+    expect(msg).toContain("Cold Water, 50 ml × 2 — ₹1,198");
+    expect(msg).toContain("Subtotal: ₹2,397");
   });
 
   it("builds wa.me links with and without a shop number", () => {

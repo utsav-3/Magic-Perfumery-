@@ -1,6 +1,22 @@
 export type FragranceFamily = "floral" | "woody" | "amber" | "fresh" | "citrus" | "gourmand";
 
-export type Concentration = "Attar" | "Eau de Parfum" | "Extrait de Parfum";
+/** Who a perfume is made for. */
+export type Audience = "him" | "her" | "unisex";
+
+/** When it's worn best. Used for "Shop by occasion". */
+export type Occasion = "everyday" | "evening" | "gifting";
+
+export const audienceLabels: Record<Audience, string> = {
+  him: "For him",
+  her: "For her",
+  unisex: "Unisex",
+};
+
+export const occasionLabels: Record<Occasion, string> = {
+  everyday: "Everyday",
+  evening: "Evening",
+  gifting: "Gifting",
+};
 
 export interface NotePyramid {
   top: string[];
@@ -14,17 +30,26 @@ export interface Variant {
   priceMinor: number;
 }
 
+/** Colours of the printed bottle label, used to draw the bottle. */
+export interface Label {
+  /** Top and bottom of the label's background gradient. */
+  from: string;
+  to: string;
+  /** Text colour on the label. */
+  ink: string;
+  /** Colour of the lotus printed on the label. */
+  mark: string;
+}
+
 export interface Fragrance {
   slug: string;
   name: string;
-  /** The corner of Bombay the scent is named for. */
-  place: string;
   tagline: string;
   description: string;
   family: FragranceFamily;
-  concentration: Concentration;
+  audience: Audience;
+  occasions: Occasion[];
   notes: NotePyramid;
   variants: [Variant, ...Variant[]];
-  /** Colour of the juice, used to draw the bottle. */
-  liquid: string;
+  label: Label;
 }

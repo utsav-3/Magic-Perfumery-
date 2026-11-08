@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { fragrances } from "@/content/fragrances";
-import { origins } from "@/content/origins";
+import { giftPicks } from "@/content/gift-guide";
 import {
   familiesOf,
   findFragrance,
   getFragranceBySlug,
+  filterFragrances,
   getRelatedFragrances,
+  sharedVariants,
   startingPrice,
 } from "@/lib/catalog";
 import type { Fragrance } from "@/types/fragrance";
@@ -26,8 +28,12 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("only links origins to fragrances that exist", () => {
-    for (const o of origins) for (const slug of o.usedIn) expect(findFragrance(slug)).toBeDefined();
+  it("only picks gifts that exist", () => {
+    for (const p of giftPicks) expect(findFragrance(p.slug)).toBeDefined();
+  });
+
+  it("gives every perfume at least one occasion", () => {
+    for (const f of fragrances) expect(f.occasions.length).toBeGreaterThan(0);
   });
 });
 
@@ -39,10 +45,29 @@ describe("catalog access", () => {
   });
 
   it("returns related products without the current one, same family first", async () => {
-    const related = await getRelatedFragrances("first-rain", 3);
+    const related = await getRelatedFragrances("the-boss", 3);
     expect(related).toHaveLength(3);
-    expect(related.some((f) => f.slug === "first-rain")).toBe(false);
-    expect(related[0]!.family).toBe("woody");
+    expect(related.some((f) => f.slug === "the-boss")).toBe(false);
+    expect(related[0]!.slug).toBe("z-classics");
+  });
+
+  it("shows unisex perfumes under him and her", () => {
+    const forHer = filterFragrances(fragrances, { audience: "her" }).map((f) => f.slug);
+    expect(forHer).toEqual(["molten-caramel", "soft-dove", "no-5"]);
+    const unisex = filterFragrances(fragrances, { audience: "unisex" }).map((f) => f.slug);
+    expect(unisex).toEqual(["molten-caramel"]);
+  });
+
+  it("combines filters", () => {
+    const list = filterFragrances(fragrances, { audience: "him", occasion: "evening" });
+    expect(list.map((f) => f.slug)).toEqual(["black-j", "molten-caramel"]);
+  });
+
+  it("reports shared prices only while every perfume costs the same", () => {
+    expect(sharedVariants(fragrances)?.map((v) => v.priceMinor)).toEqual([59_900, 1_19_900]);
+    const odd: Fragrance = { ...fragrances[0]!, variants: [{ sizeMl: 50, priceMinor: 1 }] };
+    expect(sharedVariants([...fragrances, odd])).toBeUndefined();
+    expect(sharedVariants([])).toBeUndefined();
   });
 
   it("lists each family once", () => {

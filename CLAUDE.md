@@ -1,4 +1,4 @@
-# Bombay Perfume website
+# Magic Perfumery website
 
 @AGENTS.md
 

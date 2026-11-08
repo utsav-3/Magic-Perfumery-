@@ -28,7 +28,7 @@
 │   │   └── not-found.tsx
 │   ├── components/
 │   │   ├── cart/               bag store, provider, drawer, header button (client)
-│   │   ├── home/               hero, Queen's Necklace scene, home sections
+│   │   ├── home/               hero (lotus + bottle line-up), shop-for, occasions, gift guide, ordering
 │   │   ├── layout/             site-wide chrome
 │   │   ├── product/            bottle, card, grid, filter, add-to-bag, note pyramid
 │   │   └── ui/                 shared primitives (scroll reveal)
