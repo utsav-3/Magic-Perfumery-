@@ -4,6 +4,7 @@ import { giftPicks } from "@/content/gift-guide";
 import {
   familiesOf,
   findFragrance,
+  getFeaturedFragrance,
   getFragranceBySlug,
   filterFragrances,
   getRelatedFragrances,
@@ -38,6 +39,10 @@ describe("catalog data integrity", () => {
 });
 
 describe("catalog access", () => {
+  it("features the bestseller", async () => {
+    expect((await getFeaturedFragrance()).slug).toBe("soft-dove");
+  });
+
   it("finds a product by slug and returns undefined for unknown slugs", async () => {
     const first = fragrances[0]!;
     expect(await getFragranceBySlug(first.slug)).toEqual(first);

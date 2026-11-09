@@ -1,4 +1,5 @@
 import { fragrances } from "@/content/fragrances";
+import { featuredSlug } from "@/content/featured";
 import { giftPicks } from "@/content/gift-guide";
 import type { Audience, Fragrance, FragranceFamily, Occasion, Variant } from "@/types/fragrance";
 
@@ -28,6 +29,13 @@ export async function getRelatedFragrances(slug: string, limit = 3): Promise<rea
     .sort((a, b) => b.s - a.s || a.i - b.i)
     .slice(0, limit)
     .map(({ f }) => f);
+}
+
+/** The hero's featured perfume (the best seller). Throws so a bad slug fails the build. */
+export async function getFeaturedFragrance(): Promise<Fragrance> {
+  const featured = findFragrance(featuredSlug);
+  if (!featured) throw new Error(`Featured perfume "${featuredSlug}" is not in the catalogue`);
+  return featured;
 }
 
 /** Synchronous lookup, for client code such as the bag. */
