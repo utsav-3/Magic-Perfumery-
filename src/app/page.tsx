@@ -8,14 +8,18 @@ import { ShopFor } from "@/components/home/shop-for";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
-import { getAllFragrances, getGiftPicks } from "@/lib/catalog";
+import { getAllFragrances, getFeaturedFragrance, getGiftPicks } from "@/lib/catalog";
 
 export default async function HomePage() {
-  const [fragrances, giftPicks] = await Promise.all([getAllFragrances(), getGiftPicks()]);
+  const [fragrances, giftPicks, featured] = await Promise.all([
+    getAllFragrances(),
+    getGiftPicks(),
+    getFeaturedFragrance(),
+  ]);
 
   return (
     <>
-      <Hero fragrances={fragrances} />
+      <Hero featured={featured} fragrances={fragrances} />
       <TrustStrip fragrances={fragrances} />
       <ShopFor fragrances={fragrances} />
 

@@ -71,3 +71,38 @@ test("unknown product returns 404", async ({ page }) => {
   const res = await page.goto("/fragrances/does-not-exist");
   expect(res?.status()).toBe(404);
 });
+
+test("hero adds the bestseller", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Our bestseller")).toBeVisible();
+  await page.getByRole("button", { name: "Add 50 ml — ₹599" }).click();
+  const bag = page.getByRole("dialog", { name: "Your bag" });
+  await expect(bag).toContainText("Soft Dove");
+  await page.keyboard.press("Escape");
+  await expect(bag).toBeHidden();
+  await page.getByRole("button", { name: "Add 50 ml — ₹599" }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Open bag, 2 items" })).toBeVisible();
+});
+
+test("hero works without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(`http://localhost:${process.env.PORT ?? 3000}/`);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("stays with you");
+  await expect(page.getByRole("heading", { level: 2, name: "Soft Dove" }).first()).toBeVisible();
+  await expect(page.locator("[data-hero-bottle] svg").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Shop all perfumes" }).first()).toBeVisible();
+  await context.close();
+});
+
+test("landscape phone keeps the hero inside the screen", async ({ page }) => {
+  await page.setViewportSize({ width: 800, height: 360 });
+  await page.goto("/");
+  const fits = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
+  expect(fits).toBe(true);
+  const box = await page.locator("[data-hero-bottle]").boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(800);
+});

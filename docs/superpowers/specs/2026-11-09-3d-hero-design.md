@@ -67,6 +67,7 @@ of their home page: clean product shots, quick add on hover, uppercase names.
 ## Constraints
 
 **Performance budget, measured on the production build:**
+
 - Lighthouse mobile performance of 90 or more on `/`.
 - LCP under 2.5 s, CLS under 0.05, INP under 200 ms.
 - 3D code at most about 300 KB gzipped. It is loaded after first paint and
@@ -75,6 +76,7 @@ of their home page: clean product shots, quick add on hover, uppercase names.
   phone. The render loop stops when the hero is off-screen or the tab is hidden.
 
 **Fallback (no 3D), showing the current SVG Soft Dove bottle instead:**
+
 - `prefers-reduced-motion: reduce`
 - no WebGL, or creating a WebGL context fails
 - low-power signals: `navigator.connection.saveData`, a 2g or 3g
@@ -82,6 +84,7 @@ of their home page: clean product shots, quick add on hover, uppercase names.
   together with `deviceMemory` of 4 or less, where available
 
 **Other constraints:**
+
 - The SVG bottle is also the first paint. The 3D canvas fades in over it in
   the same position and size, so the layout never moves.
 - Architecture rules from `AGENTS.md`:
@@ -95,11 +98,11 @@ of their home page: clean product shots, quick add on hover, uppercase names.
 
 ## Approaches considered
 
-| Approach | Trade-off | Decision |
-|---|---|---|
+| Approach                                                                    | Trade-off                                                                                                   | Decision                |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
 | **1. Real-time 3D (React Three Fiber + three.js)**, bottle modelled in code | Interactive and the most premium. Costs about 250 KB of JS, handled by lazy loading and the fallback rules. | **Chosen by the user.** |
-| 2. Pre-rendered spin (image sequence scrubbed by scroll) | Light on every phone, but not interactive, and re-rendered for any change. | Not chosen. |
-| 3. CSS 3D (layered flat images) | Very light, but a round bottle exposes the trick when it turns. Looks cheap. | Ruled out. |
+| 2. Pre-rendered spin (image sequence scrubbed by scroll)                    | Light on every phone, but not interactive, and re-rendered for any change.                                  | Not chosen.             |
+| 3. CSS 3D (layered flat images)                                             | Very light, but a round bottle exposes the trick when it turns. Looks cheap.                                | Ruled out.              |
 
 Placement options were: hero only, hero plus product pages, or 3D throughout.
 **The user chose hero only.**
@@ -140,7 +143,7 @@ Placement options were: hero only, hero plus product pages, or 3D throughout.
   - prices: from the catalogue via `formatPrice`
   - primary button: "Add 50 ml — ₹599", which adds to the bag and opens it
   - secondary link: "Shop all perfumes"
-- *(Builder's call, made in review)* The page `h1` stays the brand line
+- _(Builder's call, made in review)_ The page `h1` stays the brand line
   "Perfume that stays with you.", and "Magic Perfumery" stays as the top
   eyebrow, so the brand still leads the first screen and search results.
   The Soft Dove block (eyebrow "Our bestseller", the name as `h2`, the tagline
@@ -207,6 +210,7 @@ The desktop card tilt still applies to desktop only (pointer-based).
   user and the client (the free plan's limits are fine for a demo).
 
 **Decided by the user in review:**
+
 - **Account:** the user's own free (Hobby) Vercel account, because this is a
   demo. It moves to the client's account or a paid plan if it becomes the
   real shop; see TODOS.md.
@@ -236,7 +240,7 @@ The desktop card tilt still applies to desktop only (pointer-based).
 - Lighthouse mobile run on the production build, against the budget above.
   Results are recorded in `DESIGN.md`'s review log.
 - Screenshots: desktop and phone, the 3D state and the fallback state.
-- *(Builder's call, made in review)* Phone smoothness check:
+- _(Builder's call, made in review)_ Phone smoothness check:
   - Open the dev or preview URL on the user's own phone and look for stutter.
   - Record the frame rate in Chrome DevTools with 4x CPU throttling on a
     mid-tier mobile profile.

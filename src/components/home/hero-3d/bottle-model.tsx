@@ -18,7 +18,7 @@ export function BottleModel({ fragrance }: { fragrance: Fragrance }) {
       <mesh position={[0, -0.27, 0]}>
         <cylinderGeometry args={[0.24, 0.24, 1.34, 64]} />
         <meshPhysicalMaterial
-          color="#f4f1f7"
+          color="#ebe6f1"
           transmission={0.6}
           roughness={0.45}
           thickness={0.3}
@@ -36,6 +36,9 @@ export function BottleModel({ fragrance }: { fragrance: Fragrance }) {
         {/* Texture centre (u = 0.5) must face the camera (+z). */}
         <meshStandardMaterial
           map={texture ?? undefined}
+          emissiveMap={texture ?? undefined}
+          emissive="#ffffff"
+          emissiveIntensity={0.18}
           color={texture ? "#ffffff" : "#c9bfe0"}
           roughness={0.5}
         />
@@ -55,9 +58,9 @@ export function BottleModel({ fragrance }: { fragrance: Fragrance }) {
         <cylinderGeometry args={[0.22, 0.22, 0.58, 48]} />
         <meshPhysicalMaterial
           color="#ffffff"
-          transmission={0.95}
-          roughness={0.08}
-          thickness={0.1}
+          transmission={0.8}
+          roughness={0.3}
+          thickness={0.2}
           transparent
         />
       </mesh>

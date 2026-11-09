@@ -75,17 +75,6 @@
   }
 }
 
-.bottle-rise {
-  animation: bottle-rise 1100ms var(--ease-magic) both;
-  animation-delay: calc(900ms + var(--i) * 90ms);
-}
-@keyframes bottle-rise {
-  from {
-    opacity: 0;
-    transform: translateY(60px);
-  }
-}
-
 .hero-rise {
   animation: rise 1100ms var(--ease-magic) both;
   animation-delay: var(--d, 0ms);
