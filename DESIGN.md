@@ -58,16 +58,40 @@ overcap and a printed label in each perfume's colours with the lotus and the
 name. Drawn rather than photographed so every card is crisp and consistent;
 the client's real photo appears in "The real bottles" section as proof.
 
+## The 3D bestseller hero
+
+Soft Dove (the featured slug in `src/content/featured.ts`, read through the
+catalogue) is a real-time 3D bottle in the hero: frosted body, white pump, clear
+overcap and the printed label as a texture generated from the same artwork as
+the drawn bottle (`label-art.ts`). It turns slowly, leans toward a mouse
+pointer, and turns further as the page scrolls. The drawn `Bottle` is the
+first paint and the fallback, so the layout never moves. 3D code loads only on
+the home page, after the page has loaded, and only when `lib/three-policy.ts` allows
+it: no reduced motion, WebGL present and GPU-backed, no Save-Data, not a slow
+network, not a low-power device. No finger-drag and no motion-sensor tilt on
+phones.
+
+**Performance budget:** Lighthouse mobile performance 90 or more, LCP under
+2.5 s, CLS under 0.05, INP under 200 ms; 3D chunk at most 300 KB gzipped
+(`npm run check:3d`, part of `verify -- --build`: measured 265.6 KB), not in the
+home page's initial scripts. Local Lighthouse (headless Chromium without a GPU,
+low-RAM machine, mobile profile): performance 0.56 to 0.70, LCP 3.3 to 3.6 s,
+CLS 0, TBT 0.9 to 7.8 s; the same run on a product page with no 3D scores
+0.61 to 0.63, so this environment, not the hero, limits the score. Re-measure
+on the deployed URL before sharing it.
+
 ## Motion (kept small)
 
-| Where         | What                                                | Why                               |
-| ------------- | --------------------------------------------------- | --------------------------------- |
-| Hero          | Lotus draws itself, then the 9 bottles rise in turn | The one orchestrated moment.      |
-| Product cards | Bottle lifts, a shimmer sweeps; quick add slides up | Feels tactile, costs nothing.     |
-| Sections      | Fade up once on scroll (`Reveal`)                   | Paces the long home page.         |
-| Bag           | Slides in from the right                            | Confirms "added" without a toast. |
+| Where         | What                                                                                                                                                             | Why                               |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Hero          | Lotus draws itself; the 3D bottle rises, turns, leans and follows scroll                                                                                         | The one orchestrated moment.      |
+| Product cards | Desktop: gentle pointer tilt (max 6 degrees) with a sheen. Phones: bottle rises and a light sweep crosses the label as the card scrolls in (CSS scroll timeline) | Premium on both.                  |
+| Touch         | Cards and buttons press in (scale 0.98); quick add shows Added then opens the bag                                                                                | Feedback under the thumb.         |
+| Product cards | Bottle lifts, a shimmer sweeps; quick add slides up                                                                                                              | Feels tactile, costs nothing.     |
+| Sections      | Fade up once on scroll (`Reveal`)                                                                                                                                | Paces the long home page.         |
+| Bag           | Slides in from the right                                                                                                                                         | Confirms "added" without a toast. |
 
-All of it is CSS; `prefers-reduced-motion` shows the finished state.
+Everything except the hero bottle is CSS; `prefers-reduced-motion` shows the finished state and keeps the drawn bottle.
 
 ## Words
 
@@ -77,10 +101,13 @@ own: high projection, long-lasting, one price.
 
 ## Design review log
 
-| Finding                                             | Impact | Status                         |
-| --------------------------------------------------- | ------ | ------------------------------ |
-| Header overflowed at 320px (empty nav list had gap) | High   | Fixed + regression test        |
-| Gift guide bottles rendered at full panel width     | High   | Fixed — fixed bottle height    |
-| 9 products left an orphan in a 4-column grid        | Medium | Fixed — 3 columns              |
-| Lotus fought the headline on phones                 | Medium | Fixed — lower opacity on small |
-| White text on light tile gradient ends < 4.5:1      | Medium | Fixed — darker gradient ends   |
+| Finding                                                            | Impact | Status                                                              |
+| ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------- |
+| Header overflowed at 320px (empty nav list had gap)                | High   | Fixed + regression test                                             |
+| Gift guide bottles rendered at full panel width                    | High   | Fixed — fixed bottle height                                         |
+| 9 products left an orphan in a 4-column grid                       | Medium | Fixed — 3 columns                                                   |
+| Lotus fought the headline on phones                                | Medium | Fixed — lower opacity on small                                      |
+| White text on light tile gradient ends < 4.5:1                     | Medium | Fixed — darker gradient ends                                        |
+| 3D hero looked dull and showed the label sideways on first fade-in | High   | Fixed — motion clock starts at first frame, brighter lighting       |
+| First WebGL context stalled GPU-less devices for seconds           | High   | Fixed — probe runs in a worker; software renderers keep the drawing |
+| Sticky add bar missed scroll jumps (IntersectionObserver)          | Medium | Fixed — scroll check                                                |

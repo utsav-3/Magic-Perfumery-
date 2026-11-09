@@ -1,20 +1,17 @@
 import { sharedVariants } from "@/lib/catalog";
-import { formatPrice } from "@/lib/format";
+import { formatSizes } from "@/lib/format";
 import type { Fragrance } from "@/types/fragrance";
 
-/** The four promises, straight from the client's own poster. */
+/** The range at a glance, then the promises from the client's own poster. */
 export function TrustStrip({ fragrances }: { fragrances: readonly Fragrance[] }) {
   const shared = sharedVariants(fragrances);
-  const cheapest = shared?.[0];
   const items = [
+    {
+      title: `${fragrances.length} perfumes`,
+      body: shared ? formatSizes(shared) : "Long-lasting, strong projection.",
+    },
     { title: "High projection", body: "Noticed across the room." },
     { title: "Long-lasting", body: "Made to wear from morning to night." },
-    cheapest
-      ? {
-          title: "One price",
-          body: `${formatPrice(cheapest.priceMinor)} for ${cheapest.sizeMl} ml, every scent.`,
-        }
-      : { title: "Honest prices", body: "No inflated MRP." },
     { title: "Order on WhatsApp", body: "Send your bag, we reply to confirm." },
   ];
   return (
