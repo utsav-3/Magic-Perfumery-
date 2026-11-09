@@ -11,7 +11,9 @@
 - [ ] Vector logo file (SVG/AI/PDF) to replace the redrawn lotus in `src/components/brand/lotus-mark.tsx`
 - [ ] Individual product photos → `public/images/products/`; could replace the drawn bottles
 - [ ] Open Graph share image (`src/app/opengraph-image.tsx`)
-- [ ] Pick a deployment target and set `NEXT_PUBLIC_SITE_URL` there
+- [ ] Move the Vercel project to the client's account or a paid plan before going commercial (the demo runs on the Hobby plan)
+- [ ] At launch set `NEXT_PUBLIC_ALLOW_INDEXING=true` and `NEXT_PUBLIC_SITE_URL` to the real domain
+- [ ] Re-run Lighthouse mobile on the deployed URL (local runs here were limited by a GPU-less headless Chromium) and check the 3D hero on a real mid-range phone
 
 ## Later
 

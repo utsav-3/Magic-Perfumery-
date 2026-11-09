@@ -28,13 +28,14 @@
 │   │   └── not-found.tsx
 │   ├── components/
 │   │   ├── cart/               bag store, provider, drawer, header button (client)
-│   │   ├── home/               hero (lotus + bottle line-up), shop-for, occasions, gift guide, ordering
+│   │   ├── home/               hero (lotus + bestseller), shop-for, occasions, gift guide, ordering
+│   │   │   └── hero-3d/        lazy 3D bottle: scene, model, motion maths, SVG-first wrapper
 │   │   ├── layout/             site-wide chrome
 │   │   ├── product/            bottle, card, grid, filter, add-to-bag, note pyramid
 │   │   └── ui/                 shared primitives (scroll reveal)
 │   ├── config/site.ts          brand name, locale, currency, nav
 │   ├── content/                seed data (read only by lib/catalog.ts)
-│   ├── lib/                    catalog access, env, formatting
+│   ├── lib/                    catalog access, env, formatting, 3D device policy, SEO flags
 │   └── types/                  domain types
 ├── tests/
 │   ├── unit/                   Vitest

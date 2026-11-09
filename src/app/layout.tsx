@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Cinzel, Jost } from "next/font/google";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { CartProvider } from "@/components/cart/cart-provider";
@@ -8,6 +9,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 import { siteConfig } from "@/config/site";
 import { env } from "@/lib/env";
+import { robotsMeta } from "@/lib/seo";
 import "./globals.css";
 
 // Cinzel echoes the classical capitals of the Magic Perfumery wordmark.
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  robots: robotsMeta(env.NEXT_PUBLIC_ALLOW_INDEXING),
   openGraph: { siteName: siteConfig.name, type: "website", locale: "en_IN" },
 };
 
@@ -52,6 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <WhatsAppFloat number={whatsapp} />
           <CartDrawer />
         </CartProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
