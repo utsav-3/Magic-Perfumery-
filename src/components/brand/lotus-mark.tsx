@@ -12,6 +12,22 @@ const OUTER = petal(46, 17);
 const INNER = petal(31, 11);
 const angles = Array.from({ length: 8 }, (_, i) => i * 45);
 
+export interface LotusGeometry {
+  petals: { d: string; rotate: number }[];
+  centerRadius: number;
+}
+
+/** The lotus as plain data (centred on 0,0, radius about 46), for SVG strings and textures. */
+export function lotusPathData(): LotusGeometry {
+  return {
+    petals: [
+      ...angles.map((a) => ({ d: OUTER, rotate: a })),
+      ...angles.map((a) => ({ d: INNER, rotate: a + 22.5 })),
+    ],
+    centerRadius: 5,
+  };
+}
+
 /** The lotus as SVG children, centred on 0,0 with a radius of about 46. */
 export function LotusPaths({ animated = false }: { animated?: boolean }) {
   // `pathLength` lets the CSS draw every petal with the same dash values.
@@ -23,15 +39,13 @@ export function LotusPaths({ animated = false }: { animated?: boolean }) {
           style: { "--i": i } as React.CSSProperties,
         }
       : {};
+  const { petals, centerRadius } = lotusPathData();
   return (
     <>
-      {angles.map((a, i) => (
-        <path key={`o${a}`} d={OUTER} transform={`rotate(${a})`} {...draw(i)} />
+      {petals.map((p, i) => (
+        <path key={i} d={p.d} transform={`rotate(${p.rotate})`} {...draw(i)} />
       ))}
-      {angles.map((a, i) => (
-        <path key={`i${a}`} d={INNER} transform={`rotate(${a + 22.5})`} {...draw(i + 8)} />
-      ))}
-      <circle r="5" {...draw(16)} />
+      <circle r={centerRadius} {...draw(petals.length)} />
     </>
   );
 }
