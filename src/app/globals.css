@@ -164,6 +164,12 @@
 html:has(dialog[open]) {
   overflow: hidden;
 }
+/* Room under the footer for the phone sticky add bar, so it never hides the last line. */
+@media (width < 48rem) {
+  body:has([data-sticky-bar]) footer {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
 /* The chat button would sit on top of "Order on WhatsApp". */
 html:has(dialog[open]) .whatsapp-float {
   display: none;

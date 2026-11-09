@@ -6,7 +6,7 @@ import { ContactShadows, Environment, Lightformer, PerformanceMonitor } from "@r
 import * as THREE from "three";
 import type { Fragrance } from "@/types/fragrance";
 import { BottleModel } from "./bottle-model";
-import { bottleRotation } from "./hero-motion";
+import { advanceClock, bottleRotation, pointerFromWindow } from "./hero-motion";
 
 interface SceneProps {
   fragrance: Fragrance;
@@ -36,8 +36,10 @@ function Bottle({ fragrance, onReady }: { fragrance: Fragrance; onReady: () => v
   const scroll = useRef(0);
   const lean = useRef({ x: 0, y: 0 });
   const readyFired = useRef(false);
-  // Motion clock starts at the first rendered frame, so the label faces the viewer when it fades in.
-  const t0 = useRef<number | null>(null);
+  // Our own clock: starts at the first rendered frame (label faces the viewer as it
+  // fades in) and survives the frame loop pausing off-screen, so the entrance plays once.
+  const elapsed = useRef(0);
+  const pointer = useRef({ x: 0, y: 0 });
   const [finePointer] = useState(
     () => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches,
   );
@@ -51,14 +53,33 @@ function Bottle({ fragrance, onReady }: { fragrance: Fragrance; onReady: () => v
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useFrame((state, delta) => {
+  // Lean follows the pointer anywhere in the window, and eases back when it leaves.
+  useEffect(() => {
+    if (!finePointer) return;
+    const onMove = (e: PointerEvent) => {
+      pointer.current = pointerFromWindow(e.clientX, e.clientY, innerWidth, innerHeight);
+    };
+    const reset = () => {
+      pointer.current = { x: 0, y: 0 };
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", reset);
+    window.addEventListener("blur", reset);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", reset);
+      window.removeEventListener("blur", reset);
+    };
+  }, [finePointer]);
+
+  useFrame((_state, delta) => {
     const g = group.current;
     if (!g) return;
-    t0.current ??= state.clock.elapsedTime;
-    const t = state.clock.elapsedTime - t0.current;
+    const t = elapsed.current;
+    elapsed.current = advanceClock(elapsed.current, delta);
     if (finePointer) {
-      lean.current.x = THREE.MathUtils.damp(lean.current.x, state.pointer.x, 4, delta);
-      lean.current.y = THREE.MathUtils.damp(lean.current.y, -state.pointer.y, 4, delta);
+      lean.current.x = THREE.MathUtils.damp(lean.current.x, pointer.current.x, 4, delta);
+      lean.current.y = THREE.MathUtils.damp(lean.current.y, -pointer.current.y, 4, delta);
     }
     const r = bottleRotation(t, scroll.current, lean.current);
     g.rotation.set(r.x, r.y, 0);

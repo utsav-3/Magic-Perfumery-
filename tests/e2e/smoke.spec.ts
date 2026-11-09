@@ -75,12 +75,15 @@ test("unknown product returns 404", async ({ page }) => {
 test("hero adds the bestseller", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Our bestseller")).toBeVisible();
-  await page.getByRole("button", { name: "Add 50 ml — ₹599" }).click();
+  // Scoped to the hero: the grid's quick add for Soft Dove has the same label.
+  const hero = page.locator("section").filter({ has: page.locator("[data-hero-bottle]") });
+  const heroAdd = hero.getByRole("button", { name: "Add Soft Dove, 50 ml, ₹599 to bag" });
+  await heroAdd.click();
   const bag = page.getByRole("dialog", { name: "Your bag" });
   await expect(bag).toContainText("Soft Dove");
   await page.keyboard.press("Escape");
   await expect(bag).toBeHidden();
-  await page.getByRole("button", { name: "Add 50 ml — ₹599" }).click();
+  await heroAdd.click();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("button", { name: "Open bag, 2 items" })).toBeVisible();
 });
@@ -185,4 +188,15 @@ test("reduced motion keeps the drawing", async ({ browser }) => {
   await expect(page.locator("[data-hero-bottle] svg").first()).toBeVisible();
   expect(await webglScripts()).toBe(0);
   await context.close();
+});
+
+test("sticky add bar never hides the footer on phones", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/fragrances/soft-dove");
+  await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
+  const bar = page.locator("[data-sticky-bar][data-shown]");
+  await expect(bar).toBeVisible();
+  const copyright = page.locator("footer").getByText(/©/);
+  const [b, c] = [await bar.boundingBox(), await copyright.boundingBox()];
+  expect(b && c && c.y + c.height <= b.y, "footer © line is under the sticky bar").toBe(true);
 });

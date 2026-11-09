@@ -71,13 +71,23 @@ self.onmessage = () => {
 
 type Probe = Pick<DeviceSignals, "webgl" | "softwareRenderer">;
 
-function probeWebGL(): Promise<Probe> {
+export function probeWebGL(
+  createWorker: (url: string) => Worker = (url) => new Worker(url),
+): Promise<Probe> {
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined") {
     return Promise.resolve(probeOnMainThread());
   }
   return new Promise((resolve) => {
     const url = URL.createObjectURL(new Blob([probeSource], { type: "text/javascript" }));
-    const worker = new Worker(url);
+    let worker: Worker;
+    try {
+      worker = createWorker(url);
+    } catch {
+      // e.g. a Content-Security-Policy without blob: workers.
+      URL.revokeObjectURL(url);
+      resolve({ webgl: false });
+      return;
+    }
     const done = (result: Probe) => {
       clearTimeout(timer);
       worker.terminate();
@@ -91,7 +101,8 @@ function probeWebGL(): Promise<Probe> {
         webgl: e.data.webgl,
         softwareRenderer: SOFTWARE_RENDERER.test(e.data.renderer ?? ""),
       });
-    worker.onerror = () => done(probeOnMainThread());
+    // Never fall back to the main thread here: that is the stall the worker avoids.
+    worker.onerror = () => done({ webgl: false });
     worker.postMessage(0);
   });
 }

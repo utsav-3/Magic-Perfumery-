@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { bottleRotation, fallbackAfterContextLoss } from "@/components/home/hero-3d/hero-motion";
+import {
+  advanceClock,
+  bottleRotation,
+  fallbackAfterContextLoss,
+  pointerFromWindow,
+} from "@/components/home/hero-3d/hero-motion";
 
 const still = { x: 0, y: 0 };
 
@@ -32,5 +37,22 @@ describe("fallbackAfterContextLoss", () => {
     expect(fallbackAfterContextLoss("3d", "lost")).toBe("svg");
     expect(fallbackAfterContextLoss("3d", "error")).toBe("svg");
     expect(fallbackAfterContextLoss("svg", "lost")).toBe("svg");
+  });
+});
+
+describe("advanceClock", () => {
+  it("keeps counting across pauses instead of restarting", () => {
+    expect(advanceClock(5, 0.016)).toBeCloseTo(5.016);
+  });
+  it("caps a long gap so a returning tab doesn't jump", () => {
+    expect(advanceClock(5, 30)).toBeCloseTo(5.1);
+  });
+});
+
+describe("pointerFromWindow", () => {
+  it("maps the window centre to 0,0 and the corners to ±1", () => {
+    expect(pointerFromWindow(500, 400, 1000, 800)).toEqual({ x: 0, y: 0 });
+    expect(pointerFromWindow(1000, 0, 1000, 800)).toEqual({ x: 1, y: 1 });
+    expect(pointerFromWindow(0, 800, 1000, 800)).toEqual({ x: -1, y: -1 });
   });
 });

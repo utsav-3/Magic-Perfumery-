@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldUse3D, type DeviceSignals } from "@/lib/three-policy";
+import { probeWebGL, shouldUse3D, type DeviceSignals } from "@/lib/three-policy";
 
 const ok: DeviceSignals = { reducedMotion: false, webgl: true };
 
@@ -27,5 +27,45 @@ describe("shouldUse3D", () => {
     ["4g", { ...ok, effectiveType: "4g" }],
   ])("allows 3D with %s", (_, signals) => {
     expect(shouldUse3D(signals)).toBe(true);
+  });
+});
+
+describe("probeWebGL failure paths", () => {
+  // The probe runs off the main thread so a slow GPU can't freeze the page.
+  // When the worker itself fails, it must answer "no WebGL", never fall back
+  // to probing on the main thread, and never reject.
+  const g = globalThis as Record<string, unknown>;
+  const touched = { main: 0 };
+  g.OffscreenCanvas ??= class {};
+  g.Worker ??= class {};
+  g.document ??= {
+    createElement: () => {
+      touched.main++;
+      throw new Error("main-thread probe");
+    },
+  };
+
+  it("answers no WebGL when the worker can't be created", async () => {
+    const result = await probeWebGL(() => {
+      throw new Error("blocked by CSP");
+    });
+    expect(result).toEqual({ webgl: false });
+    expect(touched.main).toBe(0);
+  });
+
+  it("answers no WebGL when the worker errors, without a main-thread probe", async () => {
+    const result = await probeWebGL(() => {
+      const w = {
+        onerror: null as null | (() => void),
+        onmessage: null,
+        terminate() {},
+        postMessage() {
+          queueMicrotask(() => w.onerror?.());
+        },
+      };
+      return w as unknown as Worker;
+    });
+    expect(result).toEqual({ webgl: false });
+    expect(touched.main).toBe(0);
   });
 });

@@ -23,3 +23,27 @@ export function bottleRotation(
 export function fallbackAfterContextLoss(_prev: HeroMode, _event: "lost" | "error"): "svg" {
   return "svg";
 }
+
+/** Longest step the motion clock takes, so a returning tab doesn't jump ahead. */
+const MAX_STEP_S = 0.1;
+
+/**
+ * The scene's own clock. R3F resets `clock.elapsedTime` whenever the frame
+ * loop is paused and resumed (hero scrolled away, tab hidden), which would
+ * replay the entrance; this keeps counting from where it left off.
+ */
+export function advanceClock(elapsed: number, delta: number): number {
+  return elapsed + Math.min(Math.max(delta, 0), MAX_STEP_S);
+}
+
+/** Pointer position over the whole window, -1..1 from the centre (y up). */
+export function pointerFromWindow(
+  clientX: number,
+  clientY: number,
+  width: number,
+  height: number,
+): { x: number; y: number } {
+  const x = width > 0 ? (clientX / width) * 2 - 1 : 0;
+  const y = height > 0 ? 1 - (clientY / height) * 2 : 0;
+  return { x: clamp(x, -1, 1) + 0, y: clamp(y, -1, 1) + 0 };
+}
