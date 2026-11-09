@@ -10,10 +10,10 @@ import { audienceLabels, type Fragrance } from "@/types/fragrance";
 export function ProductCard({ fragrance }: { fragrance: Fragrance }) {
   const href = `/fragrances/${fragrance.slug}`;
   return (
-    <article className="group relative">
+    <article className="group relative transition-transform duration-150 active:scale-[0.99]">
       <Tilt>
         <div
-          className="relative grid aspect-[4/5] place-items-center overflow-hidden"
+          className="label-sweep relative grid aspect-[4/5] place-items-center overflow-hidden"
           style={{ background: labelTint(fragrance.label) }}
         >
           <span className="eyebrow text-haze absolute top-3 left-3 text-[0.6rem] sm:top-4 sm:left-4">
@@ -23,7 +23,7 @@ export function ProductCard({ fragrance }: { fragrance: Fragrance }) {
             href={href}
             tabIndex={-1}
             aria-hidden
-            className="absolute inset-0 grid place-items-center"
+            className="scroll-rise absolute inset-0 grid place-items-center"
           >
             <Bottle
               id={`card-${fragrance.slug}`}

@@ -40,7 +40,7 @@
   @apply font-sans text-xs font-medium tracking-[0.2em] uppercase;
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-xs font-medium tracking-[0.18em] uppercase transition-colors duration-300;
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-xs font-medium tracking-[0.18em] uppercase transition-[color,background-color,box-shadow,transform] duration-300 active:scale-[0.98] active:duration-150;
 }
 @utility btn-primary {
   @apply btn bg-night text-paper hover:bg-night-deep;
@@ -97,6 +97,67 @@
     opacity: 0;
     translate: 0 24px;
   }
+}
+
+/* Phone polish: cards come alive as they scroll in, on the GPU, no JS. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-rise {
+      animation: card-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .label-sweep {
+      overflow: hidden;
+    }
+    .label-sweep::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgb(255 255 255 / 0.55) 50%,
+        transparent 65%
+      );
+      translate: -100% 0;
+      animation: label-sweep linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 40%;
+    }
+    /* The cards animate themselves, so skip the grid's fade-up. */
+    [data-reveal]:has(.scroll-rise) {
+      opacity: 1 !important;
+      translate: none !important;
+      transition: none !important;
+    }
+  }
+}
+@keyframes card-rise {
+  from {
+    transform: translateY(28px);
+    opacity: 0.4;
+  }
+}
+@keyframes label-sweep {
+  to {
+    translate: 100% 0;
+  }
+}
+
+/* Lift the chat button above the phone's sticky add bar. */
+@media (max-width: 767px) {
+  html:has([data-sticky-bar][data-shown]) .whatsapp-float {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 /* Bag drawer (native <dialog>) */

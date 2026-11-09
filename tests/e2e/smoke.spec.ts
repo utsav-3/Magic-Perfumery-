@@ -106,3 +106,52 @@ test("landscape phone keeps the hero inside the screen", async ({ page }) => {
   expect(box!.x).toBeGreaterThanOrEqual(0);
   expect(box!.x + box!.width).toBeLessThanOrEqual(800);
 });
+
+test.describe("phone polish", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("quick add confirms the tap", async ({ page }) => {
+    await page.goto("/fragrances");
+    const button = page.getByRole("button", { name: "Add Cold Water, 50 ml, ₹599 to bag" });
+    await button.click();
+    await expect(button).toContainText("Added ✓");
+    const bag = page.getByRole("dialog", { name: "Your bag" });
+    await expect(bag).toBeVisible();
+    await expect(bag).toContainText("Cold Water");
+  });
+
+  test("sticky add bar on phones", async ({ page }) => {
+    await page.goto("/fragrances/soft-dove");
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const bar = page.locator("[data-sticky-bar][data-shown]");
+    await expect(bar).toBeVisible();
+    await bar.getByRole("button", { name: /add to bag/i }).click();
+    const bag = page.getByRole("dialog", { name: "Your bag" });
+    await expect(bag).toContainText("Soft Dove");
+    await page.keyboard.press("Escape");
+    await expect(bag).toBeHidden();
+
+    const wa = await page.locator(".whatsapp-float").boundingBox();
+    const sb = await page.locator("[data-sticky-bar]").boundingBox();
+    expect(wa && sb).toBeTruthy();
+    const overlap =
+      wa!.x < sb!.x + sb!.width &&
+      wa!.x + wa!.width > sb!.x &&
+      wa!.y < sb!.y + sb!.height &&
+      wa!.y + wa!.height > sb!.y;
+    expect(overlap, "WhatsApp button covers the sticky bar").toBe(false);
+
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(page.locator("[data-sticky-bar]")).toBeHidden();
+  });
+
+  test("filters swipe on phones", async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await page.goto("/fragrances");
+    const scent = page.getByRole("group", { name: /filter by scent/i });
+    const swipes = await scent.evaluate((el) => el.scrollWidth > el.clientWidth);
+    expect(swipes).toBe(true);
+    const fits = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
+    expect(fits).toBe(true);
+  });
+});

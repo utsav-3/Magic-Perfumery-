@@ -68,16 +68,18 @@ export function CollectionBrowser({ fragrances }: { fragrances: readonly Fragran
             key={g.key}
             role="group"
             aria-label={`Filter by ${g.label.toLowerCase()}`}
-            className="flex flex-wrap items-center gap-2"
+            className="-mr-4 flex snap-x scrollbar-none flex-nowrap items-center gap-2 overflow-x-auto [mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)] py-1 pr-8 sm:mr-0 sm:flex-wrap sm:overflow-visible sm:[mask-image:none] sm:pr-0"
           >
-            <span className="eyebrow text-haze w-24 shrink-0 text-[0.65rem]">{g.label}</span>
+            <span className="eyebrow text-haze w-24 shrink-0 snap-start text-[0.65rem]">
+              {g.label}
+            </span>
             {[{ value: undefined, label: "All" }, ...g.options].map((o) => (
               <button
                 key={o.value ?? "all"}
                 type="button"
                 aria-pressed={g.value === o.value}
                 onClick={() => set(g.key, o.value)}
-                className="aria-pressed:bg-night aria-pressed:text-paper ring-night/20 hover:ring-night rounded-full px-4 py-1.5 text-sm capitalize ring-1 transition-colors"
+                className="aria-pressed:bg-night aria-pressed:text-paper ring-night/20 hover:ring-night shrink-0 snap-start rounded-full px-4 py-1.5 text-sm capitalize ring-1 transition-colors"
               >
                 {o.label}
               </button>
