@@ -39,17 +39,33 @@ export function HeroBottle({ fragrance, children }: { fragrance: Fragrance; chil
 
   // Decide, then mount the scene when the browser is idle.
   useEffect(() => {
-    if (!shouldUse3D(readDeviceSignals())) return;
+    let cancelled = false;
+    let cancelIdle = () => {};
     const start = () => {
       setMode("3d");
       setMounted(true);
     };
-    if (typeof requestIdleCallback === "function") {
-      const id = requestIdleCallback(start, { timeout: 1500 });
-      return () => cancelIdleCallback(id);
-    }
-    const id = setTimeout(start, 200);
-    return () => clearTimeout(id);
+    const whenIdle = () => {
+      if (typeof requestIdleCallback === "function") {
+        const id = requestIdleCallback(start, { timeout: 1500 });
+        cancelIdle = () => cancelIdleCallback(id);
+      } else {
+        const id = setTimeout(start, 200);
+        cancelIdle = () => clearTimeout(id);
+      }
+    };
+    // After the page has loaded, so the scene never competes with first paint.
+    const decide = async () => {
+      if (!shouldUse3D(await readDeviceSignals()) || cancelled) return;
+      whenIdle();
+    };
+    if (document.readyState === "complete") void decide();
+    else window.addEventListener("load", decide, { once: true });
+    return () => {
+      cancelled = true;
+      window.removeEventListener("load", decide);
+      cancelIdle();
+    };
   }, []);
 
   useEffect(() => {

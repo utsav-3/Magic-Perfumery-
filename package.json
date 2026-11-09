@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "check:3d": "node scripts/check-3d-bundle.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --cache --cache-location node_modules/.cache/eslint",
     "lint:fix": "npm run lint -- --fix",

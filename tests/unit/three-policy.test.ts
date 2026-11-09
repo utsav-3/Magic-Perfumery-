@@ -15,6 +15,7 @@ describe("shouldUse3D", () => {
     ["3g", { ...ok, effectiveType: "3g" }],
     ["2g", { ...ok, effectiveType: "2g" }],
     ["slow-2g", { ...ok, effectiveType: "slow-2g" }],
+    ["a software renderer (no GPU)", { ...ok, softwareRenderer: true }],
     ["low cores and low memory", { ...ok, hardwareConcurrency: 4, deviceMemory: 4 }],
   ])("keeps the drawing with %s", (_, signals) => {
     expect(shouldUse3D(signals)).toBe(false);

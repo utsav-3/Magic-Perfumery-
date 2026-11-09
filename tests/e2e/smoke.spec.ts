@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 test("browse → filter → product → add to bag → order on WhatsApp", async ({ page }) => {
   await page.goto("/");
@@ -154,4 +154,35 @@ test.describe("phone polish", () => {
     const fits = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
     expect(fits).toBe(true);
   });
+});
+
+async function collectJs(page: Page) {
+  const bodies: Promise<string>[] = [];
+  page.on("response", (res) => {
+    if (res.url().endsWith(".js") || res.headers()["content-type"]?.includes("javascript")) {
+      bodies.push(res.text().catch(() => ""));
+    }
+  });
+  return async () => (await Promise.all(bodies)).filter((b) => b.includes("WebGLRenderer")).length;
+}
+
+test("3D stays off other pages", async ({ page }) => {
+  const webglScripts = await collectJs(page);
+  for (const path of ["/fragrances", "/fragrances/soft-dove"]) {
+    await page.goto(path);
+    await page.waitForLoadState("networkidle");
+  }
+  expect(await webglScripts()).toBe(0);
+});
+
+test("reduced motion keeps the drawing", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce" });
+  const page = await context.newPage();
+  const webglScripts = await collectJs(page);
+  await page.goto("/");
+  await page.waitForTimeout(2000);
+  await expect(page.locator("[data-hero-bottle] canvas")).toHaveCount(0);
+  await expect(page.locator("[data-hero-bottle] svg").first()).toBeVisible();
+  expect(await webglScripts()).toBe(0);
+  await context.close();
 });

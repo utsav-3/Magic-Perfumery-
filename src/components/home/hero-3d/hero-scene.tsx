@@ -87,6 +87,8 @@ export default function HeroScene({ fragrance, active, onReady, onContextLost }:
       camera={{ position: [0, 0, 5.8], fov: 20 }}
       gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       onCreated={({ gl }) => {
+        // Half-resolution glass pass: the frost blurs it anyway, and phones save a lot of fill.
+        gl.transmissionResolutionScale = 0.5;
         gl.domElement.addEventListener("webglcontextlost", (e) => {
           e.preventDefault();
           onContextLost();
