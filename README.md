@@ -1,6 +1,6 @@
-# Bombay Perfume
+# Magic Perfumery
 
-Storefront for Bombay Perfume. Design system: [DESIGN.md](DESIGN.md). Next.js (App Router) · TypeScript strict ·
+Storefront for Magic Perfumery. Design system: [DESIGN.md](DESIGN.md). Next.js (App Router) · TypeScript strict ·
 Tailwind CSS v4 · Vitest · Playwright.
 
 ## Quick start

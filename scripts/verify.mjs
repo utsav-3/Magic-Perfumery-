@@ -3,7 +3,7 @@
 // parallel; output is shown only for failures.
 //
 //   npm run verify            typecheck + lint + format + unit tests
-//   npm run verify -- --build also runs a production build afterwards
+//   npm run verify -- --build also runs a production build and the 3D bundle budget
 import { color, run } from "./lib/run.mjs";
 
 const checks = [
@@ -19,7 +19,9 @@ const results = await Promise.all(
 );
 
 if (process.argv.includes("--build") && results.every((r) => r.code === 0)) {
-  results.push({ name: "build", ...(await run("npm run -s build")) });
+  const build = { name: "build", ...(await run("npm run -s build")) };
+  results.push(build);
+  if (build.code === 0) results.push({ name: "3D budget", ...(await run("npm run -s check:3d")) });
 }
 
 for (const r of results.filter((r) => r.code !== 0)) {

@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "check:3d": "node scripts/check-3d-bundle.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --cache --cache-location node_modules/.cache/eslint",
     "lint:fix": "npm run lint -- --fix",
@@ -22,9 +23,13 @@
     "clean": "node scripts/clean.mjs"
   },
   "dependencies": {
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.2",
+    "@vercel/speed-insights": "2.1.0",
     "next": "16.4.5",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "three": "0.187.0",
     "zod": "4.6.7"
   },
   "devDependencies": {
@@ -33,6 +38,7 @@
     "@types/node": "22.20.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.5",
     "prettier": "3.9.10",

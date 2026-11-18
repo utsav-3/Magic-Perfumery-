@@ -2,24 +2,24 @@
 
 /* Tokens — source of truth is DESIGN.md. */
 @theme {
-  --color-dusk: #1f2142;
-  --color-dusk-deep: #14152b;
-  --color-mauve: #6e4a68;
-  --color-sodium: #f2a93b;
-  --color-plaster: #eceeea;
-  --color-mint: #bcd3c6;
-  --color-ink: #1a1b2e;
-  --color-haze: #5c5e74;
+  --color-night: #241640;
+  --color-night-deep: #160d2a;
+  --color-orchid: #8e3f86;
+  --color-saffron: #f59a5b;
+  --color-paper: #f6f2f8;
+  --color-lilac: #e9e0f3;
+  --color-ink: #1e1530;
+  --color-haze: #5a5170;
 
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-heading), ui-serif, Georgia, serif;
 
-  --ease-deco: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-magic: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
 @layer base {
   html {
-    @apply bg-plaster text-ink antialiased;
+    @apply bg-paper text-ink antialiased;
     scroll-behavior: smooth;
   }
   h1,
@@ -28,73 +28,55 @@
     @apply font-display font-normal;
   }
   :focus-visible {
-    outline: 2px solid var(--color-dusk);
+    outline: 2px solid var(--color-night);
     outline-offset: 3px;
   }
   .on-dark :focus-visible {
-    outline-color: var(--color-sodium);
+    outline-color: var(--color-saffron);
   }
 }
 
 @utility eyebrow {
-  @apply font-sans text-xs font-medium tracking-[0.22em] uppercase;
+  @apply font-sans text-xs font-medium tracking-[0.2em] uppercase;
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3.5 text-xs font-medium tracking-[0.2em] uppercase transition-colors duration-300;
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-xs font-medium tracking-[0.18em] uppercase transition-[color,background-color,box-shadow,transform] duration-300 active:scale-[0.98] active:duration-150;
 }
 @utility btn-primary {
-  @apply btn bg-dusk text-plaster hover:bg-dusk-deep;
+  @apply btn bg-night text-paper hover:bg-night-deep;
 }
 @utility btn-light {
-  @apply btn bg-sodium text-dusk-deep hover:bg-[#f7bd62];
+  @apply btn bg-saffron text-night-deep hover:bg-[#f8b07c];
 }
 @utility btn-ghost {
-  @apply btn ring-1 ring-current/30 hover:ring-current;
+  @apply btn ring-1 ring-current/40 hover:ring-current;
 }
 
-/* ── Signature: the Queen's Necklace switching on ─────────────────────── */
-.necklace-light,
-.necklace-reflection {
-  opacity: 0;
-  animation: lamp-on 900ms ease-out forwards;
-  animation-delay: calc(500ms + var(--i) * 70ms);
+/* ── Hero: the poster's violet-to-saffron sky, deepened so text stays legible ── */
+.hero-sky {
+  background:
+    radial-gradient(120% 80% at 85% 10%, rgb(245 154 91 / 0.55), transparent 55%),
+    linear-gradient(125deg, #160d2a 0%, #2d1755 40%, #6a2f7c 72%, #b2557a 100%);
 }
-.necklace-reflection {
-  transform-box: fill-box;
-  transform-origin: top;
-  animation:
-    lamp-on 900ms ease-out forwards,
-    shimmer 3.2s ease-in-out infinite alternate;
-  animation-delay: calc(500ms + var(--i) * 70ms), calc(1400ms + var(--i) * 70ms);
+
+/* ── Signature: the lotus draws itself, then the range rises into line ─── */
+.lotus-glow {
+  filter: drop-shadow(0 0 18px rgb(245 154 91 / 0.45));
 }
-/* Sodium lamps flicker once while they warm up. */
-@keyframes lamp-on {
-  0% {
-    opacity: 0;
-  }
-  45% {
-    opacity: 0.9;
-  }
-  60% {
-    opacity: 0.35;
-  }
-  100% {
-    opacity: 1;
-  }
+.lotus-petal {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1600ms var(--ease-magic) forwards;
+  animation-delay: calc(150ms + var(--i) * 90ms);
 }
-@keyframes shimmer {
-  from {
-    transform: scaleY(1);
-    opacity: 1;
-  }
+@keyframes draw {
   to {
-    transform: scaleY(0.72);
-    opacity: 0.55;
+    stroke-dashoffset: 0;
   }
 }
 
 .hero-rise {
-  animation: rise 1100ms var(--ease-deco) both;
+  animation: rise 1100ms var(--ease-magic) both;
   animation-delay: var(--d, 0ms);
 }
 @keyframes rise {
@@ -108,8 +90,8 @@
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal] {
     transition:
-      opacity 900ms var(--ease-deco),
-      translate 900ms var(--ease-deco);
+      opacity 900ms var(--ease-magic),
+      translate 900ms var(--ease-magic);
   }
   [data-reveal]:not([data-shown]) {
     opacity: 0;
@@ -117,14 +99,85 @@
   }
 }
 
+/* Phone polish: cards come alive as they scroll in, on the GPU, no JS. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-rise {
+      animation: card-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .label-sweep {
+      overflow: hidden;
+    }
+    .label-sweep::after {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgb(255 255 255 / 0.55) 50%,
+        transparent 65%
+      );
+      translate: -100% 0;
+      animation: label-sweep linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 40%;
+    }
+    /* The cards animate themselves, so skip the grid's fade-up. */
+    [data-reveal]:has(.scroll-rise) {
+      opacity: 1 !important;
+      translate: none !important;
+      transition: none !important;
+    }
+  }
+}
+@keyframes card-rise {
+  from {
+    transform: translateY(28px);
+    opacity: 0.4;
+  }
+}
+@keyframes label-sweep {
+  to {
+    translate: 100% 0;
+  }
+}
+
+/* Lift the chat button above the phone's sticky add bar. */
+@media (max-width: 767px) {
+  html:has([data-sticky-bar][data-shown]) .whatsapp-float {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Bag drawer (native <dialog>) */
 html:has(dialog[open]) {
   overflow: hidden;
 }
+/* Room under the footer for the phone sticky add bar, so it never hides the last line. */
+@media (width < 48rem) {
+  body:has([data-sticky-bar]) footer {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+/* The chat button would sit on top of "Order on WhatsApp". */
+html:has(dialog[open]) .whatsapp-float {
+  display: none;
+}
 .bag-dialog {
   translate: 100% 0;
   transition:
-    translate 450ms var(--ease-deco),
+    translate 450ms var(--ease-magic),
     display 450ms allow-discrete,
     overlay 450ms allow-discrete;
 }
@@ -137,18 +190,18 @@ html:has(dialog[open]) {
   }
 }
 .bag-dialog::backdrop {
-  background: rgb(20 21 43 / 0);
+  background: rgb(22 13 42 / 0);
   transition:
     background 450ms,
     display 450ms allow-discrete,
     overlay 450ms allow-discrete;
 }
 .bag-dialog[open]::backdrop {
-  background: rgb(20 21 43 / 0.55);
+  background: rgb(22 13 42 / 0.55);
 }
 @starting-style {
   .bag-dialog[open]::backdrop {
-    background: rgb(20 21 43 / 0);
+    background: rgb(22 13 42 / 0);
   }
 }
 

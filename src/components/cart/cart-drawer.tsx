@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { Bottle } from "@/components/product/bottle";
+import { labelTint } from "@/components/product/tint";
 import { MAX_QTY } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 
@@ -25,10 +26,10 @@ export function CartDrawer() {
       aria-labelledby="bag-title"
       onClose={cart.close}
       onClick={(e) => e.target === e.currentTarget && cart.close()}
-      className="bag-dialog bg-plaster text-ink m-0 ml-auto h-dvh max-h-dvh w-full max-w-md p-0"
+      className="bag-dialog bg-paper text-ink m-0 ml-auto h-dvh max-h-dvh w-full max-w-md p-0"
     >
       <div className="flex h-full flex-col">
-        <header className="border-dusk/10 flex items-center justify-between border-b px-6 py-5">
+        <header className="border-night/10 flex items-center justify-between border-b px-6 py-5">
           <h2 id="bag-title" className="text-3xl">
             Your bag
           </h2>
@@ -41,24 +42,22 @@ export function CartDrawer() {
           <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
             <p className="font-display text-2xl">Your bag is empty.</p>
             <Link href="/fragrances" onClick={cart.close} className="btn-primary">
-              Browse the collection
+              Shop all perfumes
             </Link>
           </div>
         ) : (
           <>
-            <ul className="divide-dusk/10 flex-1 divide-y overflow-y-auto px-6">
+            <ul className="divide-night/10 flex-1 divide-y overflow-y-auto px-6">
               {cart.lines.map((line) => (
                 <li key={`${line.slug}-${line.sizeMl}`} className="flex gap-4 py-5">
                   <div
                     className="grid h-24 w-20 shrink-0 place-items-center"
-                    style={{
-                      background: `color-mix(in oklab, ${line.fragrance.liquid} 22%, var(--color-plaster))`,
-                    }}
+                    style={{ background: labelTint(line.fragrance.label) }}
                   >
                     <Bottle
                       id={`bag-${line.slug}`}
-                      liquid={line.fragrance.liquid}
-                      attar={line.fragrance.concentration === "Attar"}
+                      name={line.fragrance.name}
+                      label={line.fragrance.label}
                       className="h-20"
                     />
                   </div>
@@ -67,15 +66,13 @@ export function CartDrawer() {
                       <Link
                         href={`/fragrances/${line.slug}`}
                         onClick={cart.close}
-                        className="font-display text-xl hover:underline"
+                        className="font-display text-lg font-semibold hover:underline"
                       >
                         {line.fragrance.name}
                       </Link>
                       <span className="text-sm">{formatPrice(line.lineTotal)}</span>
                     </div>
-                    <p className="text-haze text-sm">
-                      {line.fragrance.concentration} · {line.sizeMl} ml
-                    </p>
+                    <p className="text-haze text-sm">{line.sizeMl} ml</p>
                     <div className="mt-auto flex items-center justify-between pt-3">
                       <QtyStepper
                         label={line.fragrance.name}
@@ -95,7 +92,7 @@ export function CartDrawer() {
               ))}
             </ul>
 
-            <footer className="border-dusk/10 space-y-4 border-t px-6 py-6">
+            <footer className="border-night/10 space-y-4 border-t px-6 py-6">
               <div className="flex items-baseline justify-between">
                 <span className="eyebrow">Subtotal</span>
                 <span className="text-xl font-medium tabular-nums">
@@ -134,9 +131,9 @@ export function QtyStepper({
   min?: number;
 }) {
   const btn =
-    "grid h-8 w-8 place-items-center text-lg leading-none transition-colors hover:bg-dusk/5 disabled:opacity-30 disabled:hover:bg-transparent";
+    "grid h-8 w-8 place-items-center rounded-full text-lg leading-none transition-colors hover:bg-night/5 disabled:opacity-30 disabled:hover:bg-transparent";
   return (
-    <div className="ring-dusk/20 inline-flex items-center ring-1">
+    <div className="ring-night/20 inline-flex items-center rounded-full px-1 ring-1">
       <button
         type="button"
         className={btn}

@@ -8,6 +8,11 @@ import { z } from "zod";
 const blankToUndefined = (v: unknown) => (v === "" ? undefined : v);
 
 const schema = z.object({
+  /** Search engines may index the site. Off for the demo link; flip to "true" at launch. */
+  NEXT_PUBLIC_ALLOW_INDEXING: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((v) => v === "true"),
   NEXT_PUBLIC_SITE_URL: z.url().default("http://localhost:3000"),
   /** Digits only, with country code, e.g. 919876543210. Optional. */
   NEXT_PUBLIC_WHATSAPP_NUMBER: z.preprocess(
@@ -20,6 +25,7 @@ const schema = z.object({
 });
 
 export const env = schema.parse({
+  NEXT_PUBLIC_ALLOW_INDEXING: blankToUndefined(process.env.NEXT_PUBLIC_ALLOW_INDEXING),
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
 });

@@ -5,8 +5,10 @@ import { AddToCart } from "@/components/product/add-to-cart";
 import { Bottle } from "@/components/product/bottle";
 import { NotePyramid } from "@/components/product/note-pyramid";
 import { ProductGrid } from "@/components/product/product-grid";
+import { labelTint } from "@/components/product/tint";
 import { Reveal } from "@/components/ui/reveal";
 import { getAllFragrances, getFragranceBySlug, getRelatedFragrances } from "@/lib/catalog";
+import { audienceLabels, occasionLabels } from "@/types/fragrance";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,13 +30,13 @@ export default async function FragrancePage({ params }: Props) {
   const { slug } = await params;
   const fragrance = await getFragranceBySlug(slug);
   if (!fragrance) notFound();
-  const related = await getRelatedFragrances(slug, 4);
+  const related = await getRelatedFragrances(slug, 3);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <nav aria-label="Breadcrumb" className="eyebrow text-haze mb-8 text-[0.65rem]">
         <Link href="/fragrances" className="hover:text-ink">
-          The collection
+          All perfumes
         </Link>
         <span aria-hidden> / </span>
         <span aria-current="page">{fragrance.name}</span>
@@ -43,37 +45,41 @@ export default async function FragrancePage({ params }: Props) {
       <article className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:gap-16">
         <div
           className="grid aspect-[4/5] place-items-center self-start md:sticky md:top-24"
-          style={{
-            background: `color-mix(in oklab, ${fragrance.liquid} 24%, var(--color-plaster))`,
-          }}
+          style={{ background: labelTint(fragrance.label, 24) }}
         >
           <Bottle
             id={`pdp-${fragrance.slug}`}
-            liquid={fragrance.liquid}
-            attar={fragrance.concentration === "Attar"}
-            className="hero-rise h-[72%]"
+            name={fragrance.name}
+            label={fragrance.label}
+            className="hero-rise h-[78%]"
           />
         </div>
 
         <div className="space-y-10">
           <header className="hero-rise space-y-4" style={{ "--d": "120ms" } as React.CSSProperties}>
             <p className="eyebrow text-haze">
-              {fragrance.family} · {fragrance.concentration}
+              {audienceLabels[fragrance.audience]} · {fragrance.family}
             </p>
-            <h1 className="text-6xl leading-none sm:text-7xl">{fragrance.name}</h1>
-            <p className="font-display text-2xl">{fragrance.tagline}</p>
+            <h1 className="text-5xl leading-none font-semibold sm:text-6xl">{fragrance.name}</h1>
+            <p className="text-xl">{fragrance.tagline}</p>
           </header>
           <p className="leading-relaxed">{fragrance.description}</p>
           <AddToCart slug={fragrance.slug} name={fragrance.name} variants={fragrance.variants} />
           <NotePyramid notes={fragrance.notes} />
-          <p className="text-haze text-sm">Named for {fragrance.place}.</p>
+          <ul className="text-haze flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <li>High projection</li>
+            <li>Long-lasting</li>
+            <li>
+              Good for: {fragrance.occasions.map((o) => occasionLabels[o].toLowerCase()).join(", ")}
+            </li>
+          </ul>
         </div>
       </article>
 
       <section aria-labelledby="related-heading" className="mt-28">
         <Reveal>
           <h2 id="related-heading" className="mb-10 text-4xl">
-            More from the collection
+            You might also like
           </h2>
           <ProductGrid fragrances={related} />
         </Reveal>

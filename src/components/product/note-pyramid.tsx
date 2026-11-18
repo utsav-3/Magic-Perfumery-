@@ -8,7 +8,7 @@ const tiers = [
 
 export function NotePyramid({ notes }: { notes: Notes }) {
   return (
-    <dl className="border-dusk/15 grid grid-cols-3 gap-6 border-t pt-6">
+    <dl className="border-night/15 grid grid-cols-3 gap-6 border-t pt-6">
       {tiers.map(([key, label]) => (
         <div key={key}>
           <dt className="eyebrow text-haze text-[0.65rem]">{label}</dt>
